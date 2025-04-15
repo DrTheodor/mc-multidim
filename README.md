@@ -18,7 +18,7 @@ maven {
 
 Add the dependency:
 ```groovy
-include(modImplementation("com.github.DrTheodor:mc-multidim:2.0.0"))
+include(modImplementation("com.github.DrTheodor:mc-multidim:v2.0.0"))
 ```
 
 ```java
