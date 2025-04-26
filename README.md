@@ -9,10 +9,6 @@ Add the jitpack maven repository:
 ```groovy
 maven {
     url "https://theo.is-a.dev/maven-repo/"
-
-    metadataSources {
-        artifact() // Look directly for artifact
-    }
 }
 ```
 
