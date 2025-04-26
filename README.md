@@ -8,7 +8,7 @@ A FabricMC library mod, that allows you to dynamically create, load, unload and 
 Add the jitpack maven repository:
 ```groovy
 maven {
-    url "https://jitpack.io"
+    url "https://theo.is-a.dev/maven-repo/"
 
     metadataSources {
         artifact() // Look directly for artifact
