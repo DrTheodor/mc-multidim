@@ -32,6 +32,7 @@ public class WorldBlueprint {
     private final Identifier id;
 
     private long seed;
+    private boolean tickTime = true;
 
     private Identifier typeId;
     private DimensionType type;
@@ -79,6 +80,15 @@ public class WorldBlueprint {
     public WorldBlueprint withGenerator(ChunkGenerator generator) {
         this.generator = generator;
         return this;
+    }
+
+    public WorldBlueprint shouldTickTime(boolean tickTime) {
+        this.tickTime = tickTime;
+        return this;
+    }
+
+    public boolean shouldTickTime() {
+        return this.tickTime;
     }
 
     public Identifier id() {
