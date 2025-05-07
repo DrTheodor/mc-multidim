@@ -6,10 +6,8 @@ import org.slf4j.LoggerFactory;
 
 public class MultiDimMod implements ModInitializer {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger("ait-multidim");
+    public static final Logger LOGGER = LoggerFactory.getLogger("mc-multidim");
 
     @Override
-    public void onInitialize() {
-        MultiDim.init();
-    }
+    public void onInitialize() { }
 }

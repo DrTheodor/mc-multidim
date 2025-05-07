@@ -31,6 +31,7 @@ import java.util.Set;
 public class MultiDim {
 
     private static MultiDim instance;
+    private static boolean initialized = false;
 
     private final Map<Identifier, WorldBlueprint> blueprints = new HashMap<>();
     private final MinecraftServer server;
@@ -39,9 +40,13 @@ public class MultiDim {
     private final Set<ServerWorld> toUnload = new ReferenceOpenHashSet<>();
 
     public static void init() {
+        if (initialized)
+            return;
+
         MultiDimFileManager.init();
 
         ServerTickEvents.START_SERVER_TICK.register(server -> MultiDim.get(server).tick());
+        initialized = true;
     }
 
     private MultiDim(MinecraftServer server) {
@@ -105,6 +110,8 @@ public class MultiDim {
     }
 
     public static MultiDim get(MinecraftServer server) {
+        MultiDim.init();
+
         if (instance == null || instance.server != server)
             instance = new MultiDim(server);
 
@@ -159,8 +166,15 @@ public class MultiDim {
         return world;
     }
 
-    @SuppressWarnings("resource")
-    public void unload(RegistryKey<World> key) {
+    public void queueUnload(MultiDimServerWorld world) {
+        this.toUnload.add(world);
+    }
+
+    public void queueUnload(RegistryKey<World> key) {
+        this.toUnload.add(this.server.getWorld(key));
+    }
+
+    private void unload(RegistryKey<World> key) {
         ServerWorld world = ((MultiDimServer) this.server).multidim$removeWorld(key);
 
         if (world == null)
@@ -172,12 +186,15 @@ public class MultiDim {
         }), true, false);
     }
 
-    public void remove(MultiDimServerWorld world) {
-        this.remove(world.getRegistryKey());
+    public void queueRemove(MultiDimServerWorld world) {
+        this.toDelete.add(world);
     }
 
-    @SuppressWarnings("resource")
-    public void remove(RegistryKey<World> key) {
+    public void queueRemove(RegistryKey<World> key) {
+        this.toDelete.add(this.server.getWorld(key));
+    }
+
+    private void remove(RegistryKey<World> key) {
         ServerWorld world = ((MultiDimServer) this.server).multidim$removeWorld(key);
 
         if (world == null)
