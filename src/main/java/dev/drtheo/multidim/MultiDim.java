@@ -34,7 +34,7 @@ public class MultiDim {
     private static boolean initialized = false;
 
     private final Map<Identifier, WorldBlueprint> blueprints = new HashMap<>();
-    private final MinecraftServer server;
+    protected final MinecraftServer server;
 
     private final Set<ServerWorld> toDelete = new ReferenceOpenHashSet<>();
     private final Set<ServerWorld> toUnload = new ReferenceOpenHashSet<>();

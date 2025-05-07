@@ -95,43 +95,44 @@ public class MultiDimFileManager {
         if (!Files.exists(root))
             return;
 
+        MultiDim multidim = MultiDim.get(server);
+
         try (Stream<Path> stream = Files.list(root)) {
             stream.forEach(namespace -> {
                 if (!Files.isDirectory(namespace))
                     return;
 
-                readNamespace(server, namespace);
+                readNamespace(multidim, namespace);
             });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static void readNamespace(MinecraftServer server, Path namespace) {
-        MultiDim multidim = MultiDim.get(server);
-
+    public static void readNamespace(MultiDim multidim, Path namespace) {
         try (Stream<Path> stream = Files.list(namespace)) {
-            stream.forEach(file -> {
-                String fileName = file.getFileName().toString();
-
-                Identifier id = new Identifier(
-                        namespace.getFileName().toString(),
-                        fileName.substring(0, fileName.length() - 5) // remove .json suffix
-                );
-
-                Saved saved = read(server, id);
-
-                if (saved == null)
-                    return;
-
-                WorldBlueprint blueprint = multidim.getBlueprint(saved.blueprint);
-
-                if (blueprint.persistent() && blueprint.autoLoad())
-                    multidim.load(blueprint, saved.world);
-            });
+            stream.forEach(file -> readFromFile(multidim, namespace.getFileName().toString(), file));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void readFromFile(MultiDim multidim, String namespace, Path file) {
+        String fileName = file.getFileName().toString();
+
+        Identifier id = new Identifier(
+                namespace, fileName.substring(0, fileName.length() - 5) // remove .json suffix
+        );
+
+        Saved saved = read(multidim.server, id);
+
+        if (saved == null)
+            return;
+
+        WorldBlueprint blueprint = multidim.getBlueprint(saved.blueprint);
+
+        if (blueprint.persistent() && blueprint.autoLoad())
+            multidim.load(blueprint, saved.world);
     }
 
     record Saved(Identifier blueprint, RegistryKey<World> world) { }
