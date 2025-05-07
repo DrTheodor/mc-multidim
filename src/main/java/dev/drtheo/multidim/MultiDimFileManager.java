@@ -25,7 +25,7 @@ public class MultiDimFileManager {
 
     private static final Gson gson = new Gson();
 
-    private static Path getRootSavePath(Path root) {
+    public static Path getRootSavePath(Path root) {
         return root.resolve(".multidim2");
     }
 
@@ -33,7 +33,7 @@ public class MultiDimFileManager {
         return getRootSavePath(server.getSavePath(WorldSavePath.ROOT));
     }
 
-    private static Path getSavePath(MinecraftServer server, Identifier id) {
+    public static Path getSavePath(MinecraftServer server, Identifier id) {
         return getRootSavePath(server).resolve(id.getNamespace()).resolve(id.getPath() + ".json");
     }
 
