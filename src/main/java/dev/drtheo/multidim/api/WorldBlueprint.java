@@ -104,8 +104,9 @@ public class WorldBlueprint {
         return this.persistent;
     }
 
-    public void setAutoLoad(boolean autoLoad) {
+    public WorldBlueprint setAutoLoad(boolean autoLoad) {
         this.autoLoad = autoLoad;
+        return this;
     }
 
     public boolean autoLoad() {
