@@ -32,7 +32,6 @@ public class WorldBlueprint {
     private final Identifier id;
 
     private long seed;
-    private boolean tickTime = true;
 
     private Identifier typeId;
     private DimensionType type;
@@ -40,6 +39,7 @@ public class WorldBlueprint {
     private WorldCreator creator = MultiDimServerWorld::new;
     private ChunkGenerator generator;
 
+    private boolean autoLoad = true;
     private boolean persistent = true;
     private DimensionOptions options;
 
@@ -59,15 +59,6 @@ public class WorldBlueprint {
     public WorldBlueprint withCreator(WorldCreator creator) {
         this.creator = creator;
         return this;
-    }
-
-    public WorldBlueprint shouldTickTime(boolean tickTime) {
-        this.tickTime = tickTime;
-        return this;
-    }
-
-    public boolean shouldTickTime() {
-        return this.tickTime;
     }
 
     public WorldBlueprint withType(Identifier id) {
@@ -101,6 +92,14 @@ public class WorldBlueprint {
 
     public boolean persistent() {
         return this.persistent;
+    }
+
+    public void setAutoLoad(boolean autoLoad) {
+        this.autoLoad = autoLoad;
+    }
+
+    public boolean autoLoad() {
+        return autoLoad;
     }
 
     public MultiDimServerWorld createWorld(MinecraftServer server, RegistryKey<World> key, DimensionOptions options, boolean created) {

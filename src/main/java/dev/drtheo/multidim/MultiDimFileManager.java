@@ -125,7 +125,9 @@ public class MultiDimFileManager {
                     return;
 
                 WorldBlueprint blueprint = multidim.getBlueprint(saved.blueprint);
-                multidim.load(blueprint, saved.world);
+
+                if (blueprint.persistent() && blueprint.autoLoad())
+                    multidim.load(blueprint, saved.world);
             });
         } catch (IOException e) {
             throw new RuntimeException(e);
