@@ -111,29 +111,33 @@ public class MultiDimFileManager {
 
     public static void readNamespace(MultiDim multidim, Path namespace) {
         try (Stream<Path> stream = Files.list(namespace)) {
-            stream.forEach(file -> readFromFile(multidim, namespace.getFileName().toString(), file));
+            stream.forEach(file -> {
+                Saved saved = readFromFile(multidim, namespace.getFileName().toString(), file);
+
+                if (saved == null) {
+                    MultiDimMod.LOGGER.warn("Failed to load world from file {}", file);
+                    return;
+                }
+
+                WorldBlueprint blueprint = multidim.getBlueprint(saved.blueprint);
+
+                if (blueprint.persistent() && blueprint.autoLoad())
+                    multidim.load(blueprint, saved.world);
+            });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static void readFromFile(MultiDim multidim, String namespace, Path file) {
+    public static Saved readFromFile(MultiDim multidim, String namespace, Path file) {
         String fileName = file.getFileName().toString();
 
         Identifier id = new Identifier(
                 namespace, fileName.substring(0, fileName.length() - 5) // remove .json suffix
         );
 
-        Saved saved = read(multidim.server, id);
-
-        if (saved == null)
-            return;
-
-        WorldBlueprint blueprint = multidim.getBlueprint(saved.blueprint);
-
-        if (blueprint.persistent() && blueprint.autoLoad())
-            multidim.load(blueprint, saved.world);
+        return read(multidim.server, id);
     }
 
-    record Saved(Identifier blueprint, RegistryKey<World> world) { }
+    public record Saved(Identifier blueprint, RegistryKey<World> world) { }
 }
